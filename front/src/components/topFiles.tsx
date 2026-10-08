@@ -32,16 +32,16 @@ export default function TopFilesSlider({
   renderItem,
   onFileClick, // ✅ جديد: دالة عند النقر (اختيارية)
 }: {
-  readonly data: any[];
+  readonly data: File[];
   readonly title: string;
-  readonly icon: any;
+  readonly icon: LucideIcon;
   readonly onLoadMore?: () => void;
   readonly hasMore?: boolean;
   readonly isLoadingMore?: boolean;
   readonly itemKey?: string;
-  readonly renderItem?: (item: any, index: number) => React.ReactNode;
+  readonly renderItem?: (item: File, index: number) => React.ReactNode;
   readonly onFileClick?: (fileId: string | number) => void; // ✅ جديد
-}) {
+}){
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     slidesToScroll: 1,
@@ -54,7 +54,7 @@ export default function TopFilesSlider({
   const prevDataLength = useRef(data.length);
   const currentIndexRef = useRef(0);
 
-  const onSelect = useCallback((api: any) => {
+  const onSelect = useCallback((api: EmblaCarouselType | undefined) => {
     if (!api) return;
     setPrevBtnDisabled(!api.canScrollPrev());
     setNextBtnDisabled(!api.canScrollNext());
@@ -163,12 +163,12 @@ export const FileCard = memo(
     allowDelete = false,
     onDelete,
   }: {
-    file: any;
+    file: File;
     onNavigate: () => void;
     showStatus?: boolean;
     allowDelete?: boolean;
     onDelete?: (id_file: number) => void;
-  }) => {
+  })=> {
     const [showDeleteMenu, setShowDeleteMenu] = useState(false);
     const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
     const deleteMutation = useDeleteMyFile();
@@ -392,7 +392,7 @@ export const FileCard = memo(
                         setIsDeleteConfirmOpen(false);
                         onDelete?.(file.id_file);
                       },
-                      onError: (err: any) => {
+                      onError: (err: ApiErrorResponse) => {
                         toast.error(
                           err?.response?.data?.error || "Failed to delete file",
                         );

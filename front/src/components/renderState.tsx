@@ -1,12 +1,13 @@
 "use client";
 
+import { StudyList } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
 import AddedStudyListCard from "./studyList/addedStudyListCard";
 import StudyListSkeleton from "./studyList/StudyListSkeleton";
 
 interface RenderStateProps {
   readonly isLoading: boolean;
-  readonly data: any;
+  readonly data: { data: StudyList[] };
   readonly showSave?: boolean;
 }
 
@@ -22,7 +23,7 @@ export default function RenderState({
   if (isLoading) return <StudyListSkeleton />;
 
   if (data?.data?.length) {
-    return data.data.map((item: any) => (
+    return data.data.map((item: StudyList) => (
       <div
         key={item.id_stuList}
         onClick={(e) => {

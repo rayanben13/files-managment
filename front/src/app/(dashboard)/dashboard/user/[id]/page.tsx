@@ -6,8 +6,11 @@ import { useFilesUserById, useStudyListsUserById } from "@/hooks/usePublicProfil
 import { useUserById } from "@/hooks/useUserInformation";
 import { cn } from "@/lib/utils";
 import { BookOpen, FileText, Loader2, Shapes } from "lucide-react";
+import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+
+import { File, StudyList } from "@/types";
 
 export default function PublicUserProfile() {
     const params = useParams();
@@ -89,7 +92,7 @@ export default function PublicUserProfile() {
                                 </div>
                             ) : (userFiles?.data?.length || 0) > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                    {userFiles.data.map((file: any) => (
+                                    {userFiles.data.map((file: File) => (
                                         <FileCard
                                             key={file.id_file}
                                             file={file}
@@ -112,7 +115,7 @@ export default function PublicUserProfile() {
                                 </div>
                             ) : (userStudyLists?.data?.length || 0) > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {userStudyLists.data.map((list: any) => (
+                                    {userStudyLists.data.map((list: StudyList) => (
                                         <div
                                             key={list.id_stuList}
                                             onClick={() => router.push(`/dashboard/study_list/${list.id_stuList}`)}
@@ -142,7 +145,7 @@ export default function PublicUserProfile() {
     );
 }
 
-function EmptyState({ icon, title, description }: { icon: any, title: string, description: string }) {
+function EmptyState({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
     return (
         <div className="flex flex-col items-center justify-center h-64 text-slate-400 space-y-4 bg-white dark:bg-slate-900/50 rounded-[2rem] border border-dashed border-slate-200 dark:border-slate-800">
             <div className="opacity-20">{icon}</div>

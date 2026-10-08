@@ -26,6 +26,7 @@ import {
 
 import useAiStore from "@/Store/ai/aiStore";
 import { useMyNotificationsList } from "@/hooks/useNotifications";
+import { Notification } from "@/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import UploadFileBtn from "../profile/uploadFileBtn";
@@ -52,7 +53,7 @@ export function AppSidebar() {
   const { data: notifData } = useMyNotificationsList(1, 50);
 
   const unreadCount =
-    notifData?.data?.filter((n: any) => !n.is_read).length || 0;
+    notifData?.data?.filter((n: Notification) => !n.is_read).length || 0;
 
   const isAdmin = pathname.startsWith("/admin");
   const currentItems = isAdmin ? adminItems : items;

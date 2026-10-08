@@ -305,9 +305,9 @@ export default function AdminPage() {
 
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                             {contributorsData?.data?.top10.map(
-                                (contributor: any, index: number) => (
+                                (contributor: Record<string, unknown>, index: number) => (
                                     <tr
-                                        key={contributor.id || index}
+                                        key={(contributor.id as string | number) || index}
                                         className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group"
                                     >
                                         <td className="px-8 py-5">

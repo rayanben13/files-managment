@@ -1,10 +1,11 @@
 // components/admin/FileRow.tsx
 import { useAdminApproveRejectFile } from '@/hooks/useAdminFiles';
+import { File as FileType } from '@/types';
 import { Check, Eye, File, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function FileRow({ file }: { file: any }) {
+export default function FileRow({ file }: { file: FileType }) {
   const router = useRouter();
   const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState('');

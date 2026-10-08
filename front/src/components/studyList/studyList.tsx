@@ -28,7 +28,7 @@ export default function StudyList({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-      {studyLists.map((item: any) => (
+      {studyLists.map((item: StudyList) => (
         <div
           key={item.id_stuList}
           onClick={(e) => {

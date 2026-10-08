@@ -134,10 +134,10 @@ function UploadFileBtn({
     field: 'univ' | 'major' | 'specialty' | 'subject',
     value: string
   ) => {
-    setValue(field as any, value);
+    setValue(field as keyof UploadFormValues, value);
     setActiveSearchField(field);
 
-    const extra: any = {};
+    const extra: Record<string, string> = {};
     if (field === 'major') extra.univ = watch('univ');
     if (field === 'specialty') {
       extra.univ = watch('univ');

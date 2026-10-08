@@ -3,6 +3,7 @@
 import useReportedFilesStore from "@/Store/admin/reportedFilesStore";
 import { ReportDetailsModal } from "@/components/admin/ReportDetailsModal";
 import { Button } from "@/components/ui/button";
+import { ReportedFile } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -232,7 +233,7 @@ export default function ReportsPage() {
                   </td>
                 </tr>
               ) : (
-                reportedFiles?.map((item: any) => {
+                reportedFiles?.map((item: ReportedFile) => {
                   const fileName = item.file?.title || `File #${item.id_file}`;
                   const ownerName =
                     item.file?.users?.fullname ||

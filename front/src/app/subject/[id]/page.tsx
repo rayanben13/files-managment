@@ -65,7 +65,7 @@ export default function GuestSubjectPage() {
     }
 
     const { subject, files } = data;
-    const hasAnyFiles = Object.values(files).some((arr: any) => arr.length > 0);
+    const hasAnyFiles = Object.values(files).some((arr: any[]) => arr.length > 0);
 
     return (
         <main className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20">

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, MotionValue } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface FloatingItemProps {
@@ -27,8 +27,8 @@ interface FloatingItemProps {
   size: string;
   bg: string;
   shadow: string;
-  springX: any;
-  springY: any;
+  springX: MotionValue<number>;
+  springY: MotionValue<number>;
 }
 
 function FloatingItem({

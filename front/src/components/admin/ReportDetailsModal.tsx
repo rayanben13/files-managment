@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, AlertOctagon, X, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import useReportedFilesStore from '@/Store/admin/reportedFilesStore';
+import { ReportDetail, ReportedFile } from '@/types';
 
 interface ReportDetailsModalProps {
   fileId: number | null;
@@ -52,7 +53,7 @@ export function ReportDetailsModal({
     }
   };
 
-  const fileInfo = reportedFiles.find((f: any) => f.id_file === fileId)?.file;
+  const fileInfo = reportedFiles.find((f: ReportedFile) => f.id_file === fileId)?.file;
   const fileName = fileInfo?.title || `FILE #${fileId}`;
 
   const getReasonStyles = (reason: string) => {
@@ -99,7 +100,7 @@ export function ReportDetailsModal({
             </div>
           ) : (
             <div className="space-y-4">
-              {reportedDetails.map((report: any, index: number) => {
+              {reportedDetails.map((report: ReportDetail, index: number) => {
                 const reporterName =
                   report.users?.fullname ||
                   report.users?.username ||

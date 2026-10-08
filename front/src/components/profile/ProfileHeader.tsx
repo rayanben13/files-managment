@@ -6,13 +6,20 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import FollowButton from "./FollowButton";
 
-// تعريف الـ Props لتكون مرنة
+import { User } from "@/types";
+
+interface ProfileStats {
+  upload: number;
+  followers: number;
+  following: number;
+}
+
 interface ProfileHeaderProps {
-    user: any;
-    stats: any;
+    user: User & { user_information?: { university?: string; major?: string; academic_year?: string }; img_user?: string; username?: string; role?: string; id_user?: number };
+    stats: ProfileStats;
     status?: string;
-    isOwnProfile?: boolean; // هل هذا بروفايلي الشخصي؟
-    onEditClick?: () => void; // دالة تفتح المودال عند الضغط
+    isOwnProfile?: boolean;
+    onEditClick?: () => void;
 }
 
 export default function ProfileHeader({
@@ -32,7 +39,7 @@ export default function ProfileHeader({
     }, [initialStats]);
 
     const handleStatsUpdate = (isFollowing: boolean) => {
-        setCurrentStats((prev: any) => ({
+        setCurrentStats((prev: ProfileStats) => ({
             ...prev,
             followers: isFollowing ? (prev.followers + 1) : (prev.followers - 1)
         }));

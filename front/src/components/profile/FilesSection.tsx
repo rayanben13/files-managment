@@ -1,6 +1,7 @@
 "use client";
 
 import { useMyFiles } from "@/hooks/useFilesInformations";
+import { File as FileType } from "@/types";
 import { Loader2, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -32,7 +33,7 @@ const GridSkeleton = () => (
 // 📂 Main FilesSection Component
 // ==========================================
 export default function FilesSection() {
-    const [myFiles, setMyFiles] = useState<any[]>([]);
+    const [myFiles, setMyFiles] = useState<FileType[]>([]);
     const [filesPage, setFilesPage] = useState(1);
     const [status, setStatus] = useState("all");
     const router = useRouter();
@@ -63,7 +64,7 @@ export default function FilesSection() {
         setMyFiles((prev) => {
             const existingIds = new Set(prev.map((f) => f.id_file));
             const newFiles = filesData.data.filter(
-                (file: any) => !existingIds.has(file.id_file)
+                (file: FileType) => !existingIds.has(file.id_file)
             );
             return [...prev, ...newFiles];
         });

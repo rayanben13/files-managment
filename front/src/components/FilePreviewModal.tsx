@@ -1,58 +1,59 @@
-'use client';
+"use client";
 
-import allActurStore from '@/Store/allActurStore';
-import Image from 'next/image';
-import Link from 'next/link';
-import { toast } from 'sonner';
-import FileActions from './fileAction';
+import allActurStore from "@/Store/allActurStore";
+import Image from "next/image";
+import Link from "next/link";
+import { toast } from "sonner";
+import FileActions from "./fileAction";
 
-import { useProfileDropdownData } from '@/hooks/useUserInformation';
-import useAiStore from '@/Store/ai/aiStore';
-import { Download, Loader2, Share2, Check, X, Trash2 } from 'lucide-react';
-import ReportDialog from './reportingDialog';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useAdminApproveRejectFile } from '@/hooks/useAdminFiles';
+import { useAdminApproveRejectFile } from "@/hooks/useAdminFiles";
+import { useProfileDropdownData } from "@/hooks/useUserInformation";
+import useAiStore from "@/Store/ai/aiStore";
+import { File } from "@/types";
+import { Check, Download, Loader2, Share2, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ReportDialog from "./reportingDialog";
 
-export default function FilePreviewModal({ file }: { file: any }) {
+export default function FilePreviewModal({ file }: { file: File }) {
   const router = useRouter();
   const { getShareLink, getDownloadFiles } = allActurStore();
   const { data: userInfo } = useProfileDropdownData();
   const { activateLibraryDocument, activationLoading } = useAiStore();
-  const isAdmin = userInfo?.profileData?.role === 'admin';
-  const isGuest = !userInfo || userInfo?.profileData?.role === 'guest';
+  const isAdmin = userInfo?.profileData?.role === "admin";
+  const isGuest = !userInfo || userInfo?.profileData?.role === "guest";
 
   const [isRejectOpen, setIsRejectOpen] = useState(false);
-  const [rejectReason, setRejectReason] = useState('');
+  const [rejectReason, setRejectReason] = useState("");
 
-  const approveMutation = useAdminApproveRejectFile(file?.id_file, 'approve');
-  const rejectMutation = useAdminApproveRejectFile(file?.id_file, 'reject');
+  const approveMutation = useAdminApproveRejectFile(file?.id_file, "approve");
+  const rejectMutation = useAdminApproveRejectFile(file?.id_file, "reject");
 
   const handleApprove = () => {
     approveMutation.mutate(undefined, {
       onSuccess: () => {
-        toast.success('File approved successfully');
+        toast.success("File approved successfully");
         router.back();
       },
-      onError: (err: any) => {
-        toast.error(err?.response?.data?.error || 'Failed to approve file');
+      onError: (err: ApiErrorResponse) => {
+        toast.error(err?.response?.data?.error || "Failed to approve file");
       },
     });
   };
 
   const handleReject = () => {
     if (!rejectReason.trim()) {
-      toast.error('Please provide a reason for rejection');
+      toast.error("Please provide a reason for rejection");
       return;
     }
     rejectMutation.mutate(rejectReason, {
       onSuccess: () => {
-        toast.success('File rejected');
+        toast.success("File rejected");
         setIsRejectOpen(false);
         router.back();
       },
-      onError: (err: any) => {
-        toast.error(err?.response?.data?.error || 'Failed to reject file');
+      onError: (err: ApiErrorResponse) => {
+        toast.error(err?.response?.data?.error || "Failed to reject file");
       },
     });
   };
@@ -71,16 +72,16 @@ export default function FilePreviewModal({ file }: { file: any }) {
     if (isAdmin) {
       const shareUrl = `${window.location.origin}/files/${file.id_file}`;
       navigator.clipboard.writeText(shareUrl);
-      toast.success('Share link copied to clipboard!');
+      toast.success("Share link copied to clipboard!");
       return;
     }
     const res = await getShareLink(file.id_file);
     if (res.success) {
       const shareUrl = res.data.link || res.data;
       navigator.clipboard.writeText(shareUrl);
-      toast.success('Share link copied to clipboard!');
+      toast.success("Share link copied to clipboard!");
     } else {
-      toast.error(res.message || 'Failed to get share link');
+      toast.error(res.message || "Failed to get share link");
     }
   };
 
@@ -88,10 +89,10 @@ export default function FilePreviewModal({ file }: { file: any }) {
     // Admins can view pending files — use file_path directly, bypassing
     // the backend download endpoint which requires status=accepted
     if (isAdmin && file?.file_path) {
-      const url = file.file_path.includes('/upload/')
-        ? file.file_path.replace('/upload/', '/upload/fl_attachment/')
+      const url = file.file_path.includes("/upload/")
+        ? file.file_path.replace("/upload/", "/upload/fl_attachment/")
         : file.file_path;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
       return;
     }
     getDownloadFiles(file.id_file);
@@ -109,17 +110,17 @@ export default function FilePreviewModal({ file }: { file: any }) {
             </h1>
 
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-2">
-              <span>📅 {file.approved_at || 'Not approved yet'}</span>
+              <span>📅 {file.approved_at || "Not approved yet"}</span>
               <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
               <span>📄 {file.type}</span>
-              {file.status !== 'accepted' && (
+              {file.status !== "accepted" && (
                 <>
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase ${
-                      file.status === 'pending'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-red-100 text-red-700'
+                      file.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700"
                     }`}
                   >
                     {file.status}
@@ -167,7 +168,7 @@ export default function FilePreviewModal({ file }: { file: any }) {
 
         {/* Interaction */}
         <FileActions
-          userRole={userInfo?.profileData?.role || ''}
+          userRole={userInfo?.profileData?.role || ""}
           fileId={file.id_file}
           initialLikes={file.like || 0}
           initialDislikes={file.dislike || 0}
@@ -177,7 +178,7 @@ export default function FilePreviewModal({ file }: { file: any }) {
 
       {/* ================= SIDEBAR ================= */}
       <aside className="w-full lg:w-[380px] p-4 lg:p-6 border-l border-border bg-card flex flex-col gap-6">
-        {userInfo?.profileData?.role === 'user' && (
+        {userInfo?.profileData?.role === "user" && (
           <button
             onClick={() => activateLibraryDocument(file.id_file, file.title)}
             disabled={activationLoading}
@@ -196,7 +197,7 @@ export default function FilePreviewModal({ file }: { file: any }) {
           </button>
         )}
 
-        {isAdmin && file?.status === 'pending' && (
+        {isAdmin && file?.status === "pending" && (
           <div className="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               {/* Approve */}
@@ -249,7 +250,7 @@ export default function FilePreviewModal({ file }: { file: any }) {
                       : `/dashboard/user/${file.users?.id_user}`
                   }
                   onClick={(e) => {
-                    if (file.users?.role === 'admin') {
+                    if (file.users?.role === "admin") {
                       e.preventDefault();
                       toast.error("You can't see this profile");
                     }
@@ -261,7 +262,7 @@ export default function FilePreviewModal({ file }: { file: any }) {
                     {file.users?.img_user ? (
                       <Image
                         src={file.users?.img_user}
-                        alt={file.users?.fullname || 'User'}
+                        alt={file.users?.fullname || "User"}
                         fill
                         className="object-cover"
                         unoptimized
@@ -276,11 +277,11 @@ export default function FilePreviewModal({ file }: { file: any }) {
                   {/* User Info */}
                   <div>
                     <p className="font-semibold text-slate-800 dark:text-slate-200 group-hover:text-fuchsia-600 transition-colors">
-                      {file.users?.fullname || 'Unknown user'}
+                      {file.users?.fullname || "Unknown user"}
                     </p>
 
                     <p className="text-xs text-slate-400">
-                      @{file.users?.username || 'unknown'}
+                      @{file.users?.username || "unknown"}
                     </p>
                   </div>
                 </Link>
@@ -395,7 +396,7 @@ export default function FilePreviewModal({ file }: { file: any }) {
               <button
                 onClick={() => {
                   setIsRejectOpen(false);
-                  setRejectReason('');
+                  setRejectReason("");
                 }}
                 className="flex-1 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-sm font-medium cursor-pointer"
               >
@@ -409,14 +410,13 @@ export default function FilePreviewModal({ file }: { file: any }) {
                 {rejectMutation.isPending ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 ) : (
-                  'Confirm Reject'
+                  "Confirm Reject"
                 )}
               </button>
             </div>
           </div>
         </div>
       )}
-
     </main>
   );
 }

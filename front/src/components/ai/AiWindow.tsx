@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import useAiStore from "@/Store/ai/aiStore";
-import { Bot, Paperclip, Send, User, X, Loader2, PanelRightClose } from "lucide-react";
+import { Bot, Loader2, Paperclip, Send, User, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -46,7 +46,9 @@ export default function AiWindow() {
         {hasUnreadResponse && (
           <span className="absolute -top-1 -right-1 flex h-4 w-4">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[10px] text-white items-center justify-center font-bold">1</span>
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[10px] text-white items-center justify-center font-bold">
+              1
+            </span>
           </span>
         )}
       </button>
@@ -76,20 +78,20 @@ export default function AiWindow() {
     setError(null);
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      
+
       if (selectedFile.type !== "application/pdf") {
         setError("Only PDF files are supported");
         e.target.value = "";
         return;
       }
-      
+
       const maxSize = 5 * 1024 * 1024;
       if (selectedFile.size > maxSize) {
         setError("File size exceeds 5MB limit");
         e.target.value = "";
         return;
       }
-      
+
       try {
         await activateLocalDocument(selectedFile);
       } catch (err) {
@@ -102,12 +104,12 @@ export default function AiWindow() {
   return (
     <>
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" 
+      <div
+        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
         onClick={closeAiWindow}
       >
         {/* Centered Dialog */}
-        <div 
+        <div
           className="relative w-full max-w-2xl h-[85vh] z-50 bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
           onClick={(e) => e.stopPropagation()} // Prevent clicking inside dialog from closing it
         >
@@ -118,8 +120,12 @@ export default function AiWindow() {
                 <Bot className="w-5 h-5 text-primary dark:text-blue-400" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">AI Assistant</h1>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Ask questions about your documents</p>
+                <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                  AI Assistant
+                </h1>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Ask questions about your documents
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3 self-end sm:self-center">
@@ -168,15 +174,18 @@ export default function AiWindow() {
                   <Bot className="w-12 h-12 text-primary dark:text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Welcome to AI Assistant</h3>
+                  <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
+                    Welcome to AI Assistant
+                  </h3>
                   <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 max-w-[320px] mx-auto leading-relaxed">
-                    To start a new conversation, please upload a document or select one from your library first.
+                    To start a new conversation, please upload a document or
+                    select one from your library first.
                   </p>
                 </div>
 
                 {!activeDocument ? (
                   <div className="flex items-center gap-4 mt-4">
-                    <label 
+                    <label
                       htmlFor="window-file-upload-center"
                       className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors cursor-pointer font-medium shadow-sm hover:shadow disabled:opacity-75 disabled:cursor-not-allowed"
                     >
@@ -202,39 +211,50 @@ export default function AiWindow() {
                       <Paperclip className="w-5 h-5" />
                     </div>
                     <div className="text-left">
-                      <p className="text-sm font-bold">File Selected Successfully</p>
+                      <p className="text-sm font-bold">
+                        File Selected Successfully
+                      </p>
                       <p className="text-xs opacity-80 truncate max-w-[200px]">
-                        {activeDocument.type === "local" ? activeDocument.name : activeDocument.title}
+                        {activeDocument.type === "local"
+                          ? activeDocument.name
+                          : activeDocument.title}
                       </p>
                     </div>
                   </div>
                 )}
               </div>
             ) : (
-              messages.map((msg: any, idx: number) => {
-                const isRtl = selectedLang === 'ar';
-                const isUser = msg.role === 'user';
-                
+              messages.map((msg: AIMessage, idx: number) => {
+                const isRtl = selectedLang === "ar";
+                const isUser = msg.role === "user";
+
                 // User is always on right, AI always on left
-                const flexRowClass = isUser ? 'flex-row-reverse' : '';
-                const roundedCornerClass = isUser ? 'rounded-tr-sm' : 'rounded-tl-sm';
+                const flexRowClass = isUser ? "flex-row-reverse" : "";
+                const roundedCornerClass = isUser
+                  ? "rounded-tr-sm"
+                  : "rounded-tl-sm";
                 // Only make the bubble text RTL if it's an AI message and Arabic is selected
-                const bubbleDir = (!isUser && isRtl) ? 'rtl' : 'ltr';
+                const bubbleDir = !isUser && isRtl ? "rtl" : "ltr";
 
                 return (
-                  <div key={idx} className={`flex gap-3 ${flexRowClass} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                      isUser 
-                        ? 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300' 
-                        : 'bg-primary text-white'
-                    }`}>
+                  <div
+                    key={idx}
+                    className={`flex gap-3 ${flexRowClass} animate-in fade-in slide-in-from-bottom-2 duration-300`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                        isUser
+                          ? "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                          : "bg-primary text-white"
+                      }`}
+                    >
                       {isUser ? <User size={16} /> : <Bot size={16} />}
                     </div>
-                    <div 
+                    <div
                       className={`max-w-[80%] rounded-2xl px-4 py-3 shadow-sm overflow-hidden ${
                         isUser
-                          ? 'bg-primary text-white'
-                          : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-slate-200'
+                          ? "bg-primary text-white"
+                          : "bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-slate-200"
                       } ${roundedCornerClass}`}
                       dir={bubbleDir}
                     >
@@ -254,19 +274,23 @@ export default function AiWindow() {
                 );
               })
             )}
-            
+
             {loading && (
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 text-white">
                   <Bot size={16} />
                 </div>
-                <div 
+                <div
                   className={`rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center gap-3 rounded-tl-sm`}
-                  dir={selectedLang === 'ar' ? 'rtl' : 'ltr'}
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
                 >
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
                   <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    {selectedLang === 'ar' ? 'جاري التفكير...' : selectedLang === 'fr' ? 'Réflexion...' : 'Thinking...'}
+                    {selectedLang === "ar"
+                      ? "جاري التفكير..."
+                      : selectedLang === "fr"
+                        ? "Réflexion..."
+                        : "Thinking..."}
                   </span>
                 </div>
               </div>
@@ -279,19 +303,24 @@ export default function AiWindow() {
             {error && (
               <div className="mb-3 flex items-center justify-between bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg border border-red-200 dark:border-red-500/20">
                 <span className="text-sm font-medium">{error}</span>
-                <button onClick={() => setError(null)} className="hover:text-red-800 dark:hover:text-red-200">
+                <button
+                  onClick={() => setError(null)}
+                  className="hover:text-red-800 dark:hover:text-red-200"
+                >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             )}
-            
+
             {activeDocument && (
               <div className="mb-3 flex items-center gap-2 bg-slate-100 dark:bg-slate-800 w-fit px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
                 <Paperclip className="w-4 h-4 text-primary" />
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate max-w-[200px]">
-                  {activeDocument.type === "local" ? activeDocument.name : activeDocument.title}
+                  {activeDocument.type === "local"
+                    ? activeDocument.name
+                    : activeDocument.title}
                 </span>
-                <button 
+                <button
                   type="button"
                   onClick={clearActiveDocument}
                   className="ml-2 text-slate-400 hover:text-red-500 transition-colors"
@@ -300,7 +329,7 @@ export default function AiWindow() {
                 </button>
               </div>
             )}
-            
+
             <form onSubmit={handleSubmit} className="flex items-end gap-2">
               <div className="relative flex-1 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all flex items-center pl-2">
                 <input
@@ -311,7 +340,7 @@ export default function AiWindow() {
                   accept=".pdf"
                   disabled={activationLoading}
                 />
-                <label 
+                <label
                   htmlFor="window-file-upload"
                   className="p-2 text-slate-400 hover:text-primary transition-colors cursor-pointer rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700"
                   title="Upload PDF File"
@@ -322,23 +351,36 @@ export default function AiWindow() {
                     <Paperclip className="w-5 h-5" />
                   )}
                 </label>
-                
+
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder={!activeDocument ? "Please select a file first..." : "Ask me anything..."}
+                  placeholder={
+                    !activeDocument
+                      ? "Please select a file first..."
+                      : "Ask me anything..."
+                  }
                   className="flex-1 min-w-0 bg-transparent border-none py-3 px-2 text-sm font-medium focus:outline-none focus:ring-0 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 disabled:opacity-50"
                   disabled={loading || !activeDocument || activationLoading}
                 />
               </div>
-              
+
               <button
                 type="submit"
-                disabled={!input.trim() || loading || !activeDocument || activationLoading}
+                disabled={
+                  !input.trim() ||
+                  loading ||
+                  !activeDocument ||
+                  activationLoading
+                }
                 className="h-[46px] w-[46px] flex items-center justify-center shrink-0 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
               </button>
             </form>
           </div>
